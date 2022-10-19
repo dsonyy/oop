@@ -36,11 +36,11 @@ public class Vector2d {
         return new Vector2d(Math.max(x, other.x), Math.max(y, other.y));
     }
 
-    public Vector2d lowerRight(Vector2d other) {
+    public Vector2d lowerLeft(Vector2d other) {
         return new Vector2d(Math.min(x, other.x), Math.min(y, other.y));
     }
 
-    public Vector2d opposite(Vector2d other) {
+    public Vector2d opposite() {
         return new Vector2d(-x, -y);
     }
 
