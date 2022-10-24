@@ -2,24 +2,20 @@ package agh.ics.oop;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class World {
     public static void main(String[] args) {
-        Vector2d position1 = new Vector2d(1,2);
-        System.out.println(position1);
-        Vector2d position2 = new Vector2d(-2,1);
-        System.out.println(position2);
-        System.out.println(position1.add(position2));
-    }
-
-    private static MoveDirection[] convert(String[] args) {
-        return Arrays.stream(args).map(arg -> switch (arg) {
-            case "f" -> MoveDirection.FORWARD;
-            case "r" -> MoveDirection.RIGHT;
-            case "b" -> MoveDirection.BACKWARD;
-            case "l" -> MoveDirection.LEFT;
-            default -> null;
-        }).filter(Objects::nonNull).toArray(MoveDirection[]::new);
+        Scanner scanner = new Scanner(System.in);
+        OptionsParser optionsParser = new OptionsParser();
+        Animal animal = new Animal();
+        while (true) {
+            Arrays.stream(optionsParser.parse(scanner.nextLine()))
+                .forEach(cmd -> {
+                    animal.move(cmd);
+                    System.out.println(animal.toString());
+                });
+        }
     }
 
     private static void run(MoveDirection[] cmds) {
