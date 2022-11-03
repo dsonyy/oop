@@ -15,10 +15,6 @@ public class Animal {
         this.position = new Vector2d(2, 2);
     }
 
-    public Animal() {
-        this(new RectangularMap(5, 5));
-    }
-
     public String toString() {
         return this.orientation.toString();
     }
