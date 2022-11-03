@@ -13,7 +13,7 @@ public class SimulationEngineTest {
         assertEquals(engine.getAnimal(0).getPosition(), new Vector2d(2, 2));
         assertEquals(engine.getAnimal(1).getPosition(), new Vector2d(3, 4));
         engine.run();
-        assertEquals(engine.getAnimal(0).getPosition(), new Vector2d(2, 3));
+        assertEquals(engine.getAnimal(0).getPosition(), new Vector2d(2, 0));
         assertEquals(engine.getAnimal(1).getPosition(), new Vector2d(3, 4));
 
         engine = initEngine(
@@ -35,7 +35,7 @@ public class SimulationEngineTest {
 
     private SimulationEngine initEngine(String[] directions, Vector2d[] positions) {
         SimulationEngine engine = new SimulationEngine(
-                new OptionsParser().parse(new String[]{"f"}),
+                new OptionsParser().parse(directions),
                 new RectangularMap(10, 5),
                 positions);
         return engine;

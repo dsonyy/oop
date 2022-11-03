@@ -46,8 +46,7 @@ public class Animal {
 
     private Vector2d validatePosition(Vector2d step) {
         Vector2d newPosition = position.add(step);
-        if (newPosition.precedes(new Vector2d(4, 4))
-            && newPosition.follows(new Vector2d(0 ,0))) {
+        if (map.canMoveTo(newPosition)) {
             return newPosition;
         }
         return position;
