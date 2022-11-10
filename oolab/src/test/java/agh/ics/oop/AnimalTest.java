@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnimalTest {
-    private Animal animal = new Animal();
+    private Animal animal = new Animal(new RectangularMap(5,5), new Vector2d(2, 2));
 
     @Test
     public void positioningTest() {

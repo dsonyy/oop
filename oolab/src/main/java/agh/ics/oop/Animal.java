@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-public class Animal {
+public class Animal implements IEntity {
     private Vector2d position;
     private MapDirection orientation = MapDirection.NORTH;
     private IWorldMap map;
@@ -45,6 +45,13 @@ public class Animal {
         if (map.canMoveTo(newPosition)) {
             return newPosition;
         }
+
+        Object object = map.objectAt(newPosition);
+        if (object instanceof Grass grass && map instanceof GrassField grass_field) {
+            grass_field.replace(grass);
+            this.position = newPosition;
+        }
+
         return position;
     }
 }
