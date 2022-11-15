@@ -1,10 +1,11 @@
 package agh.ics.oop;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class AbstractWorldMap implements IWorldMap {
-    protected List<IEntity> entities = new ArrayList<IEntity>();
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
+    protected Map<Vector2d, IEntity> entities = new HashMap<>();
 
     public abstract Vector2d lowerLeft();
 
@@ -18,7 +19,7 @@ public abstract class AbstractWorldMap implements IWorldMap {
     @Override
     public boolean place(Animal animal) {
         if (!isOccupied(animal.getPosition())) {
-            entities.add(animal);
+            entities.put(animal.getPosition(), animal);
             return true;
         }
         return false;
@@ -26,27 +27,26 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        for (IEntity entity : entities) {
-            if (entity.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        return false;
+        if (objectAt(position) == null)
+            return false;
+        return true;
     }
 
     @Override
     public Object objectAt(Vector2d position) {
-        for (IEntity entity : entities) {
-            if (entity.getPosition().equals(position)) {
-                return entity;
-            }
-        }
-        return null;
+        return entities.get(position);
     }
 
     @Override
     public String toString() {
         MapVisualizer map = new MapVisualizer(this);
         return map.draw(lowerLeft(), upperRight());
+    }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        IEntity entity = entities.get(oldPosition);
+        entities.remove(oldPosition);
+        entities.put(newPosition, entity);
     }
 }

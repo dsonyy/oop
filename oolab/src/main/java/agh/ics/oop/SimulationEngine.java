@@ -1,20 +1,23 @@
 package agh.ics.oop;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SimulationEngine implements IEngine {
     private final IWorldMap map;
-    private final List<Animal> animals;
+    private final Map<Vector2d, Animal> animals;
     private final List<MoveDirection> directions;
 
     public SimulationEngine(MoveDirection[] directions, IWorldMap map, Vector2d[] positions) {
         this.map = map;
         this.directions = List.of(directions);
-        this.animals = new ArrayList<>();
+        this.animals = new HashMap<>();
         for (Vector2d position : positions) {
             Animal animal = new Animal(map, position);
-            animals.add(animal);
+            animal.addObserver(map);
+            animals.put(animal.getPosition(), animal);
             map.place(animal);
         }
     }

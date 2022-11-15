@@ -28,7 +28,8 @@ public class GrassField
             x = random.nextInt((int) Math.sqrt(10 * grass_count));
             y = random.nextInt((int) Math.sqrt(10 * grass_count));
         } while (isOccupied(new Vector2d(x, y)));
-        this.entities.add(new Grass(new Vector2d(x, y)));
+        Grass grass = new Grass(new Vector2d(x, y));
+        this.entities.put(grass.getPosition(), grass);
     }
 
     @Override
