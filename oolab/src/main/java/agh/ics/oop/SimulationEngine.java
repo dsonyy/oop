@@ -7,17 +7,16 @@ import java.util.Map;
 
 public class SimulationEngine implements IEngine {
     private final IWorldMap map;
-    private final Map<Vector2d, Animal> animals;
+    private final List<Animal> animals;
     private final List<MoveDirection> directions;
 
     public SimulationEngine(MoveDirection[] directions, IWorldMap map, Vector2d[] positions) {
         this.map = map;
         this.directions = List.of(directions);
-        this.animals = new HashMap<>();
+        this.animals = new ArrayList<>();
         for (Vector2d position : positions) {
             Animal animal = new Animal(map, position);
-            animal.addObserver(map);
-            animals.put(animal.getPosition(), animal);
+            animals.add(animal);
             map.place(animal);
         }
     }
