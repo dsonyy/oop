@@ -9,11 +9,13 @@ public class SimulationEngine implements IEngine {
     private final IWorldMap map;
     private final List<Animal> animals;
     private final List<MoveDirection> directions;
+    private int state;
 
     public SimulationEngine(MoveDirection[] directions, IWorldMap map, Vector2d[] positions) {
         this.map = map;
         this.directions = List.of(directions);
         this.animals = new ArrayList<>();
+        this.state = 0;
         for (Vector2d position : positions) {
             Animal animal = new Animal(map, position);
             animals.add(animal);
@@ -21,6 +23,7 @@ public class SimulationEngine implements IEngine {
         }
     }
 
+    @Override
     public Animal getAnimal(int i) {
         return animals.get(i);
     }
@@ -28,8 +31,14 @@ public class SimulationEngine implements IEngine {
     @Override
     public void run() {
         for (int i = 0; i < directions.size(); i++) {
-            animals.get(i % animals.size()).move(directions.get(i));
-            System.out.println(map.toString());
+            update();
         }
+    }
+
+    public void update() {
+        if (state >= directions.size())
+            return;
+        animals.get(state % animals.size()).move(directions.get(state));
+        state++;
     }
 }

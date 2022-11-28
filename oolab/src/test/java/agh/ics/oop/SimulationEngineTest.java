@@ -36,7 +36,7 @@ public class SimulationEngineTest {
     private SimulationEngine initEngine(String[] directions, Vector2d[] positions) {
         SimulationEngine engine = new SimulationEngine(
                 new OptionsParser().parse(directions),
-                new RectangularMap(10, 5),
+                new RectangularMap(20, 20),
                 positions);
         return engine;
     }

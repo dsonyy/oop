@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import javax.swing.text.html.parser.Entity;
+
 /**
  * The interface responsible for interacting with the map of the world.
  * Assumes that Vector2d and MoveDirection classes are defined.
@@ -18,14 +20,14 @@ public interface IWorldMap {
     boolean canMoveTo(Vector2d position);
 
     /**
-     * Place an animal on the map.
+     * Place an entity on the map.
      *
-     * @param animal
-     *               The animal to place on the map.
-     * @return True if the animal was placed. The animal cannot be placed if the map
+     * @param entity
+     *               The entity to place on the map.
+     * @return True if the entity was placed. The entity cannot be placed if the map
      *         is already occupied.
      */
-    boolean place(Animal animal);
+    boolean place(AbstractEntity entity);
 
     /**
      * Return true if given position on the map is occupied. Should not be

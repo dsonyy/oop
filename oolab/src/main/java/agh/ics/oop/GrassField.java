@@ -17,6 +17,7 @@ public class GrassField
         this.lower_left = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
         this.upper_right = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
+        random.setSeed(42);
         for (int i = 0; i < this.grass_count; i++) {
             spawnRandomGrass();
         }
@@ -30,16 +31,17 @@ public class GrassField
         } while (isOccupied(new Vector2d(x, y)));
         Grass grass = new Grass(new Vector2d(x, y));
         this.entities.put(grass.getPosition(), grass);
-    }
-
-    @Override
-    public Vector2d lowerLeft() {
-        return lower_left;
+        this.map_boundary.addPosition(grass.getPosition());
     }
 
     @Override
     public Vector2d upperRight() {
-        return upper_right;
+        return this.map_boundary.getUpperRight();
+    }
+
+    @Override
+    public Vector2d lowerLeft() {
+        return this.map_boundary.getLowerLeft();
     }
 
     public void replace(Grass grass) {

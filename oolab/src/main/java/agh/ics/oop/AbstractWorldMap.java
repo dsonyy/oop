@@ -1,11 +1,11 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
-    protected Map<Vector2d, IEntity> entities = new HashMap<>();
+    protected Map<Vector2d, AbstractEntity> entities = new HashMap<>();
+    protected final MapBoundary map_boundary = new MapBoundary();
 
     public abstract Vector2d lowerLeft();
 
@@ -13,14 +13,18 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.follows(lowerLeft()) && position.precedes(upperRight()) && !isOccupied(position);
+        if (this.isOccupied(position)) {
+            return (objectAt(position) instanceof Grass);
+        }
+        return true;
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (!isOccupied(animal.getPosition())) {
-            entities.put(animal.getPosition(), animal);
-            animal.addObserver(this);
+    public boolean place(AbstractEntity entity) {
+        if (!isOccupied(entity.getPosition())) {
+            entities.put(entity.getPosition(), entity);
+            entity.addPositionChangeObserver(this);
+            map_boundary.addPosition(entity.getPosition());
             return true;
         }
         return false;
@@ -46,7 +50,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        IEntity entity = entities.get(oldPosition);
+        AbstractEntity entity = entities.get(oldPosition);
         entities.remove(oldPosition);
         entities.put(newPosition, entity);
     }
