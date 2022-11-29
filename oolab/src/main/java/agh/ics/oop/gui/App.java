@@ -21,8 +21,7 @@ public class App extends Application {
     private MapDirection orientation = MapDirection.NORTH;
     private GridPane grid_pane;
 
-    private GridPane getGridPane(GrassField map) {
-        GridPane grid_pane = new GridPane();
+    private void setGridPaneMembers(GrassField map, GridPane grid_pane) {
         grid_pane.setGridLinesVisible(true);
         grid_pane.setMinWidth(WIDTH);
         grid_pane.setMinHeight(HEIGHT);
@@ -57,7 +56,11 @@ public class App extends Application {
             int screen_y = upper_right.y - position.y + 1;
             grid_pane.add(vBox.vBox, screen_x, screen_y, 1, 1);
         }
+    }
 
+    private GridPane getGridPane(GrassField map) {
+        GridPane grid_pane = new GridPane();
+        setGridPaneMembers(map, grid_pane);
         return grid_pane;
     }
 
@@ -65,7 +68,7 @@ public class App extends Application {
     public void start(Stage primary_stage) {
         TextField textField = new TextField();
 
-        grid_pane = new GridPane(); // getGridPane(new GrassField(10));
+        this.grid_pane = getGridPane(new GrassField(10));
         VBox vBox = new VBox(
                 grid_pane,
                 textField,
@@ -76,6 +79,7 @@ public class App extends Application {
         primary_stage.setTitle(title);
         primary_stage.setScene(scene);
         primary_stage.show();
+
     }
 
     public Button getDirectionButton() {
@@ -88,12 +92,12 @@ public class App extends Application {
     }
 
     public void renderMap(GrassField newMap) {
-//        grid_pane.setGridLinesVisible(false);
-//        grid_pane.getColumnConstraints().clear();
-//        grid_pane.getRowConstraints().clear();
+        grid_pane.setGridLinesVisible(false);
+        grid_pane.getColumnConstraints().clear();
+        grid_pane.getRowConstraints().clear();
         grid_pane.getChildren().clear();
-//        grid_pane.setGridLinesVisible(true);
-        grid_pane = getGridPane(newMap);
+        grid_pane.setGridLinesVisible(true);
+        setGridPaneMembers(newMap, grid_pane);
     }
 
     public Button getStartButton(TextField textField) {
