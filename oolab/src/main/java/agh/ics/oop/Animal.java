@@ -3,13 +3,21 @@ package agh.ics.oop;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Animal extends AbstractEntity {
+public class Animal extends AbstractEntity implements IMapElement{
     private Vector2d position;
-    private MapDirection orientation = MapDirection.NORTH;
+    private MapDirection orientation;
     private IWorldMap map;
+
+    public Animal(IWorldMap map, Vector2d initialPosition, MapDirection orientation) {
+        this.map = map;
+        this.orientation = orientation;
+        this.position = initialPosition;
+        this.observers = new ArrayList<>();
+    }
 
     public Animal(IWorldMap map, Vector2d initialPosition) {
         this.map = map;
+        this.orientation = MapDirection.NORTH;
         this.position = initialPosition;
         this.observers = new ArrayList<>();
     }
@@ -17,6 +25,7 @@ public class Animal extends AbstractEntity {
     public Animal(IWorldMap map) {
         this.map = map;
         this.position = new Vector2d(2, 2);
+        this.orientation = MapDirection.NORTH;
     }
 
     public String toString() {
@@ -65,5 +74,15 @@ public class Animal extends AbstractEntity {
         }
 
         return position;
+    }
+
+    @Override
+    public String getImagePath() {
+        return switch (this.getOrientation()) {
+            case NORTH -> "src/main/resources/up.png";
+            case EAST -> "src/main/resources/right.png";
+            case SOUTH -> "src/main/resources/down.png";
+            case WEST -> "src/main/resources/left.png";
+        };
     }
 }

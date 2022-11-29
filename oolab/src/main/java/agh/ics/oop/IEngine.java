@@ -9,8 +9,5 @@ package agh.ics.oop;
  */
 public interface IEngine {
     void run();
-
-    void update();
-
     Animal getAnimal(int i);
 }

@@ -1,21 +1,15 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GrassField
         extends AbstractWorldMap {
     private final int grass_count;
-    private final Vector2d lower_left;
-    private final Vector2d upper_right;
     private final Random random = new Random();
 
     public GrassField(int grass_count) {
         super();
         this.grass_count = grass_count;
-        this.lower_left = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
-        this.upper_right = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
         random.setSeed(42);
         for (int i = 0; i < this.grass_count; i++) {
@@ -47,5 +41,9 @@ public class GrassField
     public void replace(Grass grass) {
         entities.remove(grass);
         spawnRandomGrass();
+    }
+
+    public Set<Vector2d> getEntities() {
+        return entities.keySet();
     }
 }

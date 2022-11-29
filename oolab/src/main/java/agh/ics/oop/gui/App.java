@@ -5,24 +5,29 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.util.Collection;
+import java.util.Set;
 
 public class App extends Application {
     private final int WIDTH = 400;
     private final int HEIGHT = 400;
     private final String title = "Window";
+    private MapDirection orientation = MapDirection.NORTH;
+    private GridPane grid_pane;
 
-    private GridPane createGridPane(AbstractWorldMap map, IEngine engine) {
+    private GridPane getGridPane(GrassField map) {
         GridPane grid_pane = new GridPane();
         grid_pane.setGridLinesVisible(true);
         grid_pane.setMinWidth(WIDTH);
         grid_pane.setMinHeight(HEIGHT);
         grid_pane.setAlignment(Pos.CENTER);
-        Label label = new Label("X/Y");
+        Label label = new Label("X\\Y");
         GridPane.setHalignment(label, HPos.CENTER);
         grid_pane.add(label, 0, 0);
         grid_pane.getColumnConstraints().add(new ColumnConstraints(30));
@@ -43,25 +48,14 @@ public class App extends Application {
             grid_pane.add(label, 0, i);
         }
 
-        for (int i = lower_left.x; i <= upper_right.x; i++) {
-            for (int j = lower_left.y; j <= upper_right.y; j++) {
-                int screen_x = i - lower_left.x + 1;
-                int screen_y = upper_right.y - j + 1;
-                if (map.isOccupied(new Vector2d(i, j))) {
-                    label = new Label("#");
-                    GridPane.setHalignment(label, HPos.CENTER);
-                    grid_pane.add(label, screen_x, screen_y);
-                }
-            }
-        }
-
-        for (int i = 0; i < 2; i++) {
-            Animal animal = engine.getAnimal(i);
-            label = new Label(String.valueOf(i));
+        Set<Vector2d> entities = map.getEntities();
+        for (Vector2d position : entities) {
+            GuiElementBox vBox = new GuiElementBox((IMapElement) map.objectAt(position));
+            label = new Label();
             GridPane.setHalignment(label, HPos.CENTER);
-            int screen_x = animal.getPosition().x - lower_left.x + 1;
-            int screen_y = upper_right.y - animal.getPosition().y + 1;
-            grid_pane.add(label, screen_x, screen_y);
+            int screen_x = position.x - lower_left.x + 1;
+            int screen_y = upper_right.y - position.y + 1;
+            grid_pane.add(vBox.vBox, screen_x, screen_y, 1, 1);
         }
 
         return grid_pane;
@@ -69,17 +63,50 @@ public class App extends Application {
 
     @Override
     public void start(Stage primary_stage) {
-        String[] args = this.getParameters().getRaw().toArray(String[]::new);
-        MoveDirection[] directions = OptionsParser.parse(args);
-        Vector2d[] positions = { new Vector2d(3, -1), new Vector2d(1, 2) };
-        GrassField map = new GrassField(10);
-        IEngine engine = new SimulationEngine(directions, map, positions);
+        TextField textField = new TextField();
 
-        GridPane pane = createGridPane(map, engine);
+        grid_pane = new GridPane(); // getGridPane(new GrassField(10));
+        VBox vBox = new VBox(
+                grid_pane,
+                textField,
+                getStartButton(textField),
+                getDirectionButton());
 
-        Scene scene = new Scene(pane, WIDTH, HEIGHT);
+        Scene scene = new Scene(vBox, WIDTH, HEIGHT + 100);
         primary_stage.setTitle(title);
         primary_stage.setScene(scene);
         primary_stage.show();
+    }
+
+    public Button getDirectionButton() {
+        Button directionButton = new Button(orientation.toString());
+        directionButton.setOnAction((action) -> {
+            this.orientation = this.orientation.next();
+            directionButton.setText(this.orientation.toString());
+        });
+        return directionButton;
+    }
+
+    public void renderMap(GrassField newMap) {
+//        grid_pane.setGridLinesVisible(false);
+//        grid_pane.getColumnConstraints().clear();
+//        grid_pane.getRowConstraints().clear();
+        grid_pane.getChildren().clear();
+//        grid_pane.setGridLinesVisible(true);
+        grid_pane = getGridPane(newMap);
+    }
+
+    public Button getStartButton(TextField textField) {
+        Button startButton = new Button("Start");
+        startButton.setOnAction((action) -> {
+            String text = textField.getText();
+            MoveDirection[] directions = OptionsParser.parse(text.split(" "));
+            Vector2d[] positions = {new Vector2d(1, 3), new Vector2d(2, -1)};
+            GrassField map = new GrassField(10);
+            IEngine engine = new SimulationEngine(directions, map, positions, this, orientation);
+            Thread engineThread = new Thread(engine::run);
+            engineThread.start();
+        });
+        return startButton;
     }
 }
